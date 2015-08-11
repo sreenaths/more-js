@@ -1,2 +1,19 @@
 # more-js
-Because Javascript can be richer.
+
+Adds more functionalities to the javascript data types.
+
+## Installation
+
+  npm install more-js
+
+## Usage
+
+  require('more-js');
+
+## Tests
+
+  npm test
+
+## Release History
+
+* 0.1.0 Initial release
