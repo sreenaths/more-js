@@ -1,10 +1,12 @@
 "use strict"
 
-require("../helpers/protoInject")(String, {
+require("../helpers/inject")(String.prototype, {
 
   /*
-   * Replaces the patterns in current string with the given value
-   * @params [val1, val2 ... Key Object] {} is the pattern that gets replaced
+   * Replaces the patterns in current string with the given values.
+   * Pattern can be {} or {argumentIndex} or {keyName}. {} will be replaced in the order of given arguments.
+   * Optionally a hash of key value pares can be passed a slast argument.
+   * @params [val1, val2 ... Key Object]
    * @return formatted string
    */
   fmt: function () {

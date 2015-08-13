@@ -1,6 +1,6 @@
 "use strict"
 
-require("../helpers/protoInject")(Array, {
+require("../helpers/inject")(Array.prototype, {
 
   /*
    * Append an array to the end of current array
@@ -13,7 +13,7 @@ require("../helpers/protoInject")(Array, {
   },
 
   /*
-   * Pushes only non-null values in to the array
+   * Pushes only non-null values into the array
    * @params val1, [val2... valn]
    * @return Current array
    */

@@ -29,6 +29,67 @@ describe('Array', function() {
 
 //-- Object --------------------------
 describe('Object', function() {
+  it('Object.isObject', function() {
+    var obj = {};
+    expect(Object.isObject(obj)).to.be.true;
+    obj = [];
+    expect(Object.isObject(obj)).to.be.true;
+    obj = null;
+    expect(Object.isObject(obj)).to.be.false;
+    obj = undefined;
+    expect(Object.isObject(obj)).to.be.false;
+    obj = function () {};
+    expect(Object.isPlainObject(obj)).to.be.false;
+  });
+
+  it('Object.isPlainObject', function() {
+    var obj = {};
+    expect(Object.isPlainObject(obj)).to.be.true;
+    obj = [];
+    expect(Object.isPlainObject(obj)).to.be.false;
+    obj = null;
+    expect(Object.isPlainObject(obj)).to.be.false;
+    obj = undefined;
+    expect(Object.isPlainObject(obj)).to.be.false;
+    obj = function () {};
+    expect(Object.isPlainObject(obj)).to.be.false;
+  });
+
+  it('Object.isArray', function() {
+    var obj = [];
+    expect(Object.isArray(obj)).to.be.true;
+    obj = {};
+    expect(Object.isArray(obj)).to.be.false;
+  });
+
+  it('Object.isString', function() {
+    var obj = "str";
+    expect(Object.isString(obj)).to.be.true;
+    obj = {};
+    expect(Object.isString(obj)).to.be.false;
+  });
+
+  it('Object.isBoolean', function() {
+    var obj = true;
+    expect(Object.isBoolean(obj)).to.be.true;
+    obj = {};
+    expect(Object.isBoolean(obj)).to.be.false;
+  });
+
+  it('Object.isNumber', function() {
+    var obj = 1;
+    expect(Object.isNumber(obj)).to.be.true;
+    obj = {};
+    expect(Object.isNumber(obj)).to.be.false;
+  });
+
+  it('Object.isFunction', function() {
+    var obj = function () {};
+    expect(Object.isFunction(obj)).to.be.true;
+    obj = {};
+    expect(Object.isFunction(obj)).to.be.false;
+  });
+
   it('{}.val', function() {
     var obj = {a: {b: {c: 101}}};
     assert.equal(obj.val('a.b.c'), obj.a.b.c);
@@ -55,6 +116,29 @@ describe('Object', function() {
     expect(obj.values()).to.have.length(3);
     expect(obj.values()).to.eql([ 1, 2, 3]);
   });
+
+  it('{}.merge', function() {
+    // Normal
+    expect({a: 1, b: 2}.merge({c: 3})).to.eql({a: 1, b: 2, c: 3});
+    expect({a: 1, b: 2, c: 3}.merge({b: "A"})).to.eql({a: 1, b: "A", c: 3});
+    expect({a: 1, b: 2, c: 3}.merge({b: {d: 4}})).to.eql({a: 1, b: {d: 4}, c: 3});
+
+    // Nested
+    expect({a: 1, b: {c: 3}}.merge({b: {d: 4}})).to.eql({a: 1, b:{c: 3, d: 4}});
+
+    // Array merge
+    expect({a: 1, b: [2, 3]}.merge({b: [4]})).to.eql({a: 1, b:[4, 3]});
+
+    // Array append
+    expect({a: 1, b: [2, 3]}.merge({b: [4]}, true)).to.eql({a: 1, b:[2, 3, 4]});
+
+    //Negative case
+    function invalidMerge() {
+      var obj = {a: 1, b: {c: 3}};
+      obj.merge(undefined);
+    }
+    expect(invalidMerge).to.throw(Error);
+  });
 });
 
 //-- String --------------------------
@@ -65,7 +149,10 @@ describe('String', function() {
       y: 2
     };
 
+    assert.equal("abc".fmt(), "abc");
     assert.equal("abc".fmt(1, 2), "abc");
+    assert.equal("abc{}".fmt(), "abc");
+
     // Auto index
     assert.equal("a{}b{}c".fmt(1, 2), "a1b2c");
     assert.equal("a{}{}c".fmt(1, 2), "a12c");
