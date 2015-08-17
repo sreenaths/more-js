@@ -4,8 +4,8 @@ require("../helpers/inject")(String.prototype, {
 
   /*
    * Replaces the patterns in current string with the given values.
-   * Pattern can be {} or {argumentIndex} or {keyName}. {} will be replaced in the order of given arguments.
-   * Optionally a hash of key value pares can be passed a slast argument.
+   * Pattern can be {} or {argumentIndex} or {keyName}. {} will be replaced in the order of arguments.
+   * Optionally a hash of key value pairs can be passed as last argument.
    * @params [val1, val2 ... Key Object]
    * @return formatted string
    */

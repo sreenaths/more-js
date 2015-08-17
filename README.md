@@ -13,24 +13,24 @@ Adds more functionalities to the javascript data types.
 ## Functions
 * #### Array
   * **[].append(array)** - Append an array to the end of current array
-  * **[].filterPush(val1, [val2... valn])** - Pushes only non-null values into the array
+  * **[].filterPush(val1, [val2...valn])** - Pushes only non-null values into the array
 * #### Object
   * Static
     * **Object.isObject(object)** - Returns true for non-null objects
-    * **Object.isPlainObject(object)** - Returns true for a plain objects - non-null, not array, not dom element, not window, not any other basic types
+    * **Object.isPlainObject(object)** - Returns true for a plain objects (non-null, not array, not dom element, not window, not any other basic types)
     * **Object.isArray(object)** - Returns true if object is an Array
-    * **Object.isString(object)** -Returns true if object is an String
-    * **Object.isBoolean(object)** - Returns true if object is an Boolean
-    * **Object.isNumber(object)** - Returns true if object is an Number
-    * **Object.isFunction(object)** - Returns true if object is an Function
+    * **Object.isString(object)** -Returns true if object is a String
+    * **Object.isBoolean(object)** - Returns true if object is a Boolean
+    * **Object.isNumber(object)** - Returns true if object is a Number
+    * **Object.isFunction(object)** - Returns true if object is a Function
   * Member
-    * **{}.val(path)** - Gets the value at the specified key path. Keys must be dot seperated
+    * **{}.val(path)** - Gets the value at the specified key path. Keys in the path must be dot seperated
     * **{}.keys()** - Return all keys of current object
     * **{}.values()** - Return an array of all values in the object
-    * **{}.forEach(callback)** - Adds the missing forEach function for Objects
-    * **{}.merge(object, appendArray)** - Recursively merge an object to the current object
+    * **{}.forEach(callback)** - Adds the missing forEach function to Objects
+    * **{}.merge(object, appendArray)** - Recursively merges the given object to the current object
 * #### String
-  * **"".fmt([val1, val2 ... Key Object])** - Replaces the patterns in current string with the given values. Pattern can be {} or {argumentIndex} or {keyName}. {} will be replaced in the order of given arguments. Optionally a hash of key value pares can be passed a slast argument.
+  * **"".fmt([val1, val2...Key Object])** - Replaces the patterns in current string with the given values. Pattern can be {} or {argumentIndex} or {keyName}. {} will be replaced in the order of given arguments. Optionally a hash of key value pairs can be passed as last argument.
 
 ## Tests
 
