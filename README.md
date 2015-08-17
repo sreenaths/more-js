@@ -11,9 +11,11 @@ Adds more functionalities to the javascript data types.
   require('more-js');
 
 ## Functions
+
 * #### Array
   * **[].append(array)** - Append an array to the end of current array
   * **[].filterPush(val1, [val2...valn])** - Pushes only non-null values into the array
+
 * #### Object
   * Static
     * **Object.isObject(object)** - Returns true for non-null objects
@@ -29,6 +31,7 @@ Adds more functionalities to the javascript data types.
     * **{}.values()** - Return an array of all values in the object
     * **{}.forEach(callback)** - Adds the missing forEach function to Objects
     * **{}.merge(object, appendArray)** - Recursively merges the given object to the current object
+
 * #### String
   * **"".fmt([val1, val2...Key Object])** - Replaces the patterns in current string with the given values. Pattern can be {} or {argumentIndex} or {keyName}. {} will be replaced in the order of given arguments. Optionally a hash of key value pairs can be passed as last argument.
 
