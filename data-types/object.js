@@ -2,6 +2,50 @@
 
 //-- Static functions -------------------------
 require("../helpers/inject")(Object.prototype, {
+
+  /*
+   * Returns type string of an object
+   * @param object {Object}
+   * @return {String}
+   */
+  typeOf: function (object) {
+    var type = typeof object;
+    switch(type) {
+      case "object":
+        if(Object.isArray(object)) {
+          type = "array";
+        }
+        else if (object === null) {
+          type = "null";
+        }
+        else if(object instanceof RegExp) {
+          type = "regexp";
+        }
+        else if(object instanceof Date) {
+          type = "date";
+        }
+        else if(object instanceof Boolean) {
+          type = "boolean";
+        }
+        else if(object instanceof Number) {
+          type = "number";
+        }
+        else if(object instanceof String) {
+          type = "string";
+        }
+      break;
+      case "number":
+        if(isNaN(object)) {
+          type = "nan";
+        }
+        else if (object === Infinity) {
+          type = "infinity";
+        }
+      break;
+    }
+    return type;
+  },
+
   /*
    * Returns true for non-null objects
    * @param object {Object}
@@ -18,7 +62,11 @@ require("../helpers/inject")(Object.prototype, {
    */
   isPlainObject: function (object) {
     // Check for null || object || array || dom element || window
-    if(!object || typeof object !== 'object' || Array.isArray(object) || object.nodeType || object.Object === Object) {
+    if(!object ||
+        typeof object !== 'object' ||
+        Array.isArray(object) ||
+        object.nodeType ||
+        object.Object === Object) {
       return false;
     }
     return true;
@@ -108,6 +156,44 @@ require("../helpers/inject")(Object.prototype, {
   },
 
   /*
+   * Given a value does a reverse look-up for a key
+   * @param value Any javascript variable
+   * @param key {String}
+   */
+  keyOf: function (value) {
+    var keys = this.keys(),
+        key,
+        index = 0,
+        length = keys.length;
+
+    while(index < length) {
+      key = keys[index++];
+
+      if(this[key] === value) {
+        return key;
+      }
+    }
+    return undefined;
+  },
+
+  /*
+   * Given a value does a reverse look-up for all matching keys
+   * @param value Any javascript variable
+   * @param keys {Array}
+   */
+  keysOf: function (value) {
+    var keys = [];
+
+    this.keys().forEach(function (key) {
+      if(this[key] === value) {
+        keys.push(key);
+      }
+    }, this);
+
+    return keys;
+  },
+
+  /*
    * Adds the missing forEach function for Objects
    * @param callback {Function} The function will be called with two arguments, key and value
    * @return none
@@ -124,26 +210,23 @@ require("../helpers/inject")(Object.prototype, {
    * @param appendArray {Boolean} Default false.
    */
   merge: function(object, appendArray) {
-    if(!object) {
-      throw new Error("Merge Failed: Cannot merge {} and {}".fmt(this, object));
+    if(!Array.isPlainObject(object)) {
+      throw new Error("Merge Failed: Cannot merge {} and {}".fmt(Object.typeOf(this), Object.typeOf(object)));
     }
 
     Object.keys(object).forEach(function (key) {
-      if(Object.isArray(this[key]) && Object.isArray(object[key])) {
-        if(appendArray) {
-          this[key].append(object[key]);
-        }
-        else {
-          this[key].merge(object[key]);
-        }
-      }
-      else if(Object.isPlainObject(this[key]) && Object.isPlainObject(object[key])) {
+      var val = this[key];
+      if(
+        (Array.isPlainObject(val) && Object.isPlainObject(object[key])) ||
+        (Array.isArray(val) && Object.isArray(object[key]))
+      ) {
         this[key].merge(object[key], appendArray);
       }
       else {
         this[key] = object[key];
       }
     }, this);
+
     return this;
   }
 });

@@ -7,6 +7,94 @@ var expect = require('chai').expect,
 
 //-- Array ---------------------------
 describe('Array', function() {
+  it('[].first', function() {
+    var array = [1, 2, 3, 4];
+    expect(array.first()).to.eql(1);
+    expect([].first()).to.eql(undefined);
+  });
+
+  it('[].last', function() {
+    var array = [1, 2, 3, 4];
+    expect(array.last()).to.eql(4);
+    expect([].last()).to.eql(undefined);
+  });
+
+  it('[].validIndex', function() {
+    var array = [1, 2, 3, 4];
+    expect(array.validIndex(0)).to.be.true;
+    expect(array.validIndex(-1)).to.be.false;
+    expect(array.validIndex(4)).to.be.false;
+  });
+
+  it('[].normalizeIndex', function() {
+    var array = [1, 2, 3, 4];
+    expect(array.normalizeIndex(0)).to.eql(0);
+    expect(array.normalizeIndex(3)).to.eql(3);
+    expect(array.normalizeIndex(-1)).to.eql(3);
+    expect(array.normalizeIndex(-4)).to.eql(0);
+
+    expect(array.normalizeIndex(4)).to.eql(undefined);
+    expect(array.normalizeIndex(-5)).to.eql(undefined);
+  });
+
+  it('[].indexesOf', function() {
+    var array = [1, 2, 1, 4];
+    expect(array.indexesOf(1)).to.eql([0, 2]);
+  });
+
+  it('[].swap', function() {
+    var array = [1, 2, 3, 4];
+
+    expect(array.swap(0, 2)).to.be.true;
+    expect(array).to.eql([ 3, 2, 1, 4]);
+
+    expect(array.swap(-2, 1)).to.be.true;
+    expect(array).to.eql([ 3, 1, 2, 4]);
+
+    expect(array.swap(-2, 2)).to.be.true;
+    expect(array).to.eql([ 3, 1, 2, 4]);
+
+    expect(array.swap(0, 6)).to.be.false;
+    expect(array.swap(-1, 6)).to.be.false;
+    expect(array.swap(-10, 3)).to.be.false;
+  });
+
+  it('[].removeFrom', function() {
+    var array = [1, 2, 3, 4, 5, 6, 7];
+    expect(array.removeFrom(2)).to.eql([3]);
+    expect(array.removeFrom(2, 2)).to.eql([4, 5]);
+    expect(array.removeFrom(-2)).to.eql([6]);
+
+    expect(array.removeFrom(10)).to.eql(undefined);
+    expect(array.removeFrom(-10)).to.eql(undefined);
+  });
+
+  it('[].insert', function() {
+    var array = [1, 2, 3, 4];
+
+    expect(array.insert(2)).to.eql([1, 2, 3, 4]);
+    expect(array.insert(2, 8, 9)).to.eql([1, 2, 8, 9, 3, 4]);
+    expect(array.insert(-1, 10, 11)).to.eql([1, 2, 8, 9, 3, 10, 11, 4]);
+
+    expect(array.insert(20)).to.eql(undefined);
+    expect(array.insert(-20)).to.eql(undefined);
+  });
+
+  it('[].remove', function() {
+    var array = [3, -1, 0, 1, 2, 2, 3];
+
+    expect(array.remove(1)).to.eql(1);
+    expect(array).to.eql([3, -1, 0, 2, 2, 3]);
+
+    expect(array.remove(2)).to.eql(2);
+    expect(array).to.eql([3, -1, 0, 3]);
+
+    expect(array.remove(3, 1)).to.eql(1);
+    expect(array).to.eql([-1, 0, 3]);
+
+    expect(array.remove(10)).to.eql(0);
+  });
+
   it('[].append', function() {
     var array = [1, 2];
     array.append([3, 4]);
@@ -25,16 +113,95 @@ describe('Array', function() {
     expect(array).to.have.length(6);
     expect(array).to.eql([ 1, 2, 3, 4, "0", 5]);
   });
+
+  it('[].unique', function() {
+    var array = [1, 2, 1, 4, 2, 3];
+    expect(array.unique()).to.eql([1, 2, 4, 3]);
+    expect(array).to.eql([1, 2, 1, 4, 2, 3]);
+  });
+
+  it('[].realValues', function() {
+    var array = [1, null, 2, 3, null, false, "", 4];
+    expect(array.realValues()).to.eql([1, 2, 3, 4]);
+  });
+
+  it('[].merge', function() {
+    // Array merge
+    var array = [1, 2, 3, 4];
+    expect(array.merge([5, 6])).to.eql([5, 6, 3, 4]);
+
+    // Array append
+    array = [1, 2, 3, 4];
+    expect(array.merge([5, 6], true)).to.eql([1, 2, 3, 4, 5, 6]);
+
+    // Object inside array merge
+    array = [{x: 1}, 1, 2];
+    expect(array.merge([{y: 2}, 1, 2])).to.eql([{x: 1, y: 2}, 1, 2]);
+
+    // Array inside object inside array merge
+    array = [{x: 1, z: [1, 2]}, 1, 2];
+    expect(array.merge([{y: 2, z: [3]}, 1, 2])).to.eql([{x: 1, y: 2, z: [3, 2]}, 1, 2]);
+
+    // Object inside array inside object inside array merge
+    array = [{x: 1, z: [{a: 1}, 2]}, 1, 2];
+    expect(array.merge([{y: 2, z: [{b: 2}]}, 1, 2])).to.eql([{x: 1, y: 2, z: [{a:1, b:2}, 2]}, 1, 2]);
+
+    // Array over undefined
+    array = [undefined, 1, 2];
+    expect(array.merge([{y: 2}, 3])).to.eql([{y: 2}, 3, 2]);
+
+    // Undefined over array
+    array = [[1], 1, 2];
+    expect(array.merge([undefined, 3])).to.eql([undefined, 3, 2]);
+
+    //Array over object
+    array = [{x: 1}, 1, 2];
+    expect(array.merge([[1], 1, 2])).to.eql([[1], 1, 2]);
+
+    //Negative case
+    function invalidMerge() {
+      var array = [1, 2];
+      array.merge(undefined);
+    }
+    expect(invalidMerge).to.throw(Error);
+
+    //Negative case
+    function invalidMerge() {
+      var array = [1, 2];
+      array.merge({});
+    }
+    expect(invalidMerge).to.throw(Error);
+  });
 });
 
 //-- Object --------------------------
 describe('Object', function() {
+
+  it('Object.typeOf', function() {
+    expect(Object.typeOf(1)).to.eql("number");
+    expect(Object.typeOf("")).to.eql("string");
+    expect(Object.typeOf(true)).to.eql("boolean");
+    expect(Object.typeOf({})).to.eql("object");
+    expect(Object.typeOf(function () {})).to.eql("function");
+    expect(Object.typeOf(undefined)).to.eql("undefined");
+    expect(Object.typeOf([])).to.eql("array");
+    expect(Object.typeOf(null)).to.eql("null");
+    expect(Object.typeOf(NaN)).to.eql("nan");
+    expect(Object.typeOf(new Date())).to.eql("date");
+    expect(Object.typeOf(1 / 0)).to.eql("infinity");
+    expect(Object.typeOf(new Boolean())).to.eql("boolean");
+    expect(Object.typeOf(new Number())).to.eql("number");
+    expect(Object.typeOf(new String())).to.eql("string");
+    expect(Object.typeOf(/s/)).to.eql("regexp");
+  });
+
   it('Object.isObject', function() {
     var obj = {};
     expect(Object.isObject(obj)).to.be.true;
     obj = [];
     expect(Object.isObject(obj)).to.be.true;
     obj = null;
+
     expect(Object.isObject(obj)).to.be.false;
     obj = undefined;
     expect(Object.isObject(obj)).to.be.false;
@@ -107,6 +274,28 @@ describe('Object', function() {
     expect(obj.values()).to.eql([ 1, 2, 3]);
   });
 
+  it('{}.keyOf', function() {
+    var valObj = {},
+        obj = {a: 1, b: 2, c: 3, d: valObj, e: 'e'};
+
+    expect(obj.keyOf(1)).to.eql('a');
+    expect(obj.keyOf(4)).to.eql(undefined);
+
+    expect(obj.keyOf(valObj)).to.eql('d');
+
+    expect(obj.keyOf(undefined)).to.eql(undefined);
+  });
+
+  it('{}.keysOf', function() {
+    var valObj = {},
+        obj = {a: 1, b: valObj, c: 3, d: valObj, e: 'e'};
+
+    expect(obj.keysOf(1)).to.eql(['a']);
+    expect(obj.keysOf(valObj)).to.eql(['b', 'd']);
+
+    expect(obj.keysOf(undefined)).to.have.length(0);
+  });
+
   it('{}.forEach', function() {
     var obj = {a: 1, b: 2, c: 3},
         values = [];
@@ -128,9 +317,12 @@ describe('Object', function() {
 
     // Array merge
     expect({a: 1, b: [2, 3]}.merge({b: [4]})).to.eql({a: 1, b:[4, 3]});
+    expect({a: 1, b: [{x: 1}, 2]}.merge({b: [{y: 2}, 2, 3]})).to.eql({a: 1, b:[{x: 1, y: 2}, 2, 3]});
+    expect({a: 1, b: [{x: [1]}, 2]}.merge({b: [{x: [2]}, 2, 3]})).to.eql({a: 1, b:[{x: [2]}, 2, 3]});
 
     // Array append
     expect({a: 1, b: [2, 3]}.merge({b: [4]}, true)).to.eql({a: 1, b:[2, 3, 4]});
+    expect({a: 1, b: [{x: [1]}, 2]}.merge({b: [{x: [2]}, 2, 3]})).to.eql({a: 1, b: [{x: [2]}, 2, 3]});
 
     //Negative case
     function invalidMerge() {
@@ -138,42 +330,49 @@ describe('Object', function() {
       obj.merge(undefined);
     }
     expect(invalidMerge).to.throw(Error);
+
+    //Negative case
+    function invalidMerge() {
+      var obj = {a: 1, b: {c: 3}};
+      obj.merge([]);
+    }
+    expect(invalidMerge).to.throw(Error);
   });
 });
 
 //-- String --------------------------
 describe('String', function() {
-  it('"".fmt', function() {
+  it('"".format', function() {
     var paramObj = {
       x: 1,
       y: 2
     };
 
-    assert.equal("abc".fmt(), "abc");
-    assert.equal("abc".fmt(1, 2), "abc");
-    assert.equal("abc{}".fmt(), "abc");
+    assert.equal("abc".format(), "abc");
+    assert.equal("abc".format(1, 2), "abc");
+    assert.equal("abc{}".format(), "abc");
 
     // Auto index
-    assert.equal("a{}b{}c".fmt(1, 2), "a1b2c");
-    assert.equal("a{}{}c".fmt(1, 2), "a12c");
-    assert.equal("a{}{}{}c".fmt(1, 2), "a12c"); // False
+    assert.equal("a{}b{}c".format(1, 2), "a1b2c");
+    assert.equal("a{}{}c".format(1, 2), "a12c");
+    assert.equal("a{}{}{}c".format(1, 2), "a12c"); // False
 
     // Indexed
-    assert.equal("a{0}b{1}c".fmt(1, 2), "a1b2c");
-    assert.equal("a{1}b{0}c".fmt(1, 2), "a2b1c");
+    assert.equal("a{0}b{1}c".format(1, 2), "a1b2c");
+    assert.equal("a{1}b{0}c".format(1, 2), "a2b1c");
 
     // Key based
-    assert.equal("a{x}b{y}c".fmt(paramObj), "a1b2c");
-    assert.equal("a{y}b{x}c".fmt(paramObj), "a2b1c");
+    assert.equal("a{x}b{y}c".format(paramObj), "a1b2c");
+    assert.equal("a{y}b{x}c".format(paramObj), "a2b1c");
 
     // Index + Key
-    assert.equal("a{}{0}b{y}c".fmt(3, paramObj), "a33b2c");
-    assert.equal("a{}{0}{}b{y}c".fmt(3, 4, paramObj), "a334b2c");
-    assert.equal("a{}{1}{}b{y}c".fmt(3, 4, paramObj), "a344b2c");
-    assert.equal("a{1}{}{1}b{y}c".fmt(3, 4, paramObj), "a434b2c");
+    assert.equal("a{}{0}b{y}c".format(3, paramObj), "a33b2c");
+    assert.equal("a{}{0}{}b{y}c".format(3, 4, paramObj), "a334b2c");
+    assert.equal("a{}{1}{}b{y}c".format(3, 4, paramObj), "a344b2c");
+    assert.equal("a{1}{}{1}b{y}c".format(3, 4, paramObj), "a434b2c");
 
     //Escaped
-    assert.equal("a}b{}c".fmt(1, 2), "a}b1c");
-    //assert.equal("a\{\}b{}c".fmt(1, 2), "a{b1c"); // TODO: Dont convert escaped patterns
+    assert.equal("a}b{}c".format(1, 2), "a}b1c");
+    //assert.equal("a\{\}b{}c".format(1, 2), "a{b1c"); // TODO: Dont convert escaped patterns
   });
 });
