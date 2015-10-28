@@ -215,5 +215,52 @@ require("../helpers/inject")(Array.prototype, {
     }
 
     return this;
-  }
+  },
+
+  /*
+   * Converts an array into a hash with value at the specified path as key
+   * ie [{x:"a", y:"aa"}, {x:"b", y:"bb"}] and path 'x' will
+   * give {a:{x:"a", y:"aa"}, b:{x:"b", y:"bb"}}
+   * @param path {String}
+   * @return {Object}
+   */
+  hashify: function (path) {
+    return this.reduce(function (obj, element) {
+      if(element) {
+        obj[element.val(path)] = element;
+      }
+      return obj;
+    }, {});
+  },
+
+  /*
+   * Find first element from the array with matching value at the specified path
+   * The function uses === for comparison
+   * @param path {String}
+   * @param value {*}
+   * @return {*}
+   */
+  findBy: function (path, value) {
+    var element;
+    for(var i = 0, length = this.length; i < length; i++){
+      element = this[i];
+      if(element && element.val(path) === value) {
+        return element;
+      }
+    }
+  },
+
+  /*
+   * Finds all element from the array with matching value at the specified path
+   * The function uses === for comparison
+   * @param path {String}
+   * @param value {*}
+   * @return {*}
+   */
+  findAllBy: function (path, value) {
+    return this.filter(function (element) {
+      return element && element.val(path) === value;
+    });
+  },
+
 });

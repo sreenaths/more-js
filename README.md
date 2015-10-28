@@ -17,14 +17,17 @@ Adds more functionality to the JavaScript data types.
   * **[].last()** - Returns the last element in the array
   * **[].validIndex(index)** - Returns true if the index is in limit
   * **[].normalizeIndex(index)** - Mainly to convert a negative index to a valid index from the right. Returns normalized index if index is valid, else undefined
-  * **[].indexesOf(element)** - Get indexes of all occurrence of an element
+  * **[].indexesOf(element)** - Get indexes of all occurrences of an element
   * **[].swap(indexA, indexB)** - Swaps values at indexes A & B, returns true if successful
-  * **[].removeFrom(element, count)** - Removes count number of value from the specified index. Count must be greater than 0 and defaults to 1. Return the removed values.
+  * **[].removeFrom(element, count)** - Removes count number of value from the specified index. Count must be greater than 0 and defaults to 1. Returns the removed values.
   * **[].remove(element, count)** - Remove instances of a specific element from the array
   * **[].insert(index, element1[...elementN])** - Inserts a set of elements at a position
   * **[].append(array)** - Append an array to the end of current array
   * **[].filterPush(val1, [val2...valN])** - Pushes only non-null values into the array
   * **[].unique()** - Returns a new array of all unique elements
+  * **[].hashify(path)** - Converts an array into a hash with value at the specified path as key
+  * **[].findBy(path, value)** - Find first element from the array with matching value at the specified path. The function uses === for comparison
+  * **[].findAllBy(path, value)** - Finds all element from the array with matching value at the specified path. Uses === for comparison
 
 * #### Object
   * Static
@@ -57,12 +60,14 @@ Adds more functionality to the JavaScript data types.
 
 * **0.1.0 Initial release**
 * **0.2.0 Added string support**
-  1. Added fmt(formatter) function to String.
-  2. Added filterPush function to Array.
-  3. Added val, values, keys & forEach functions to Object.
+  * Added fmt(formatter) function to String.
+  * Added filterPush function to Array.
+  * Added val, values, keys & forEach functions to Object.
 * **0.3.0 More object functions**
   * Added isObject, isPlainObject, isArray, isString, isBoolean, isNumber, isFunction, & merge functions to Object.
-* **0.4.0 More object functions**
+* **0.4.0 More functions**
   * Added array functions first, last, validIndex, normalizeIndex, indexesOf, swap, removeFrom, remove, insert, unique.
   * Added object functions typeOf, keyOf, keysOf.
   * Added string function format, both format and fmt are aliases.
+* **0.5.0 More array functions**
+  * Array - hashify, findBy, findAllBy

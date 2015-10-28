@@ -172,6 +172,46 @@ describe('Array', function() {
     }
     expect(invalidMerge).to.throw(Error);
   });
+
+  it('[].hashify', function() {
+    var array = [{x:"a", y:1}, {x:"b", y:2}, {x:"c", y:3}];
+    expect(array.hashify('x')).to.eql({
+      "a": array[0],
+      "b": array[1],
+      "c": array[2]
+    });
+
+    var array = [{x:{xx: "a"}, y:1}, {x:{xx: "b"}, y:2}, {x:{xx: "c"}, y:3}];
+    expect(array.hashify('x.xx')).to.eql({
+      "a": array[0],
+      "b": array[1],
+      "c": array[2]
+    });
+  });
+
+  it('[].findBy', function() {
+    var array = [{x:"a", y:1}, {x:"b", y:2}, {x:"c", y:3}, {x:"d", y:"3"}];
+    expect(array.findBy('x', "b")).to.eql(array[1]);
+
+    expect(array.findBy('y', "3")).to.eql(array[3]);
+    expect(array.findBy('x', "e")).to.eql(undefined);
+    expect(array.findBy('z', "b")).to.eql(undefined);
+
+    array = [{x:{xx:"a"}, y:1}, {x:"b", y:2}, {x:"c", y:3}, {x:"d", y:"3"}];
+    expect(array.findBy('x.xx', "a")).to.eql(array[0]);
+  });
+
+  it('[].findAllBy', function() {
+    var array = [{x:"a", y:1}, {x:"b", y:2}, {x:"c", y:2}, {x:"d", y:"2"}];
+    expect(array.findAllBy('y', 2)).to.eql([array[1], array[2]]);
+
+    expect(array.findBy('x', "e")).to.eql(undefined);
+    expect(array.findBy('z', "b")).to.eql(undefined);
+
+    array = [{x:{xx:"a"}, y:1}, {x:{xx:"a"}, y:2}, {x:"c", y:3}, {x:"d", y:"3"}];
+    expect(array.findAllBy('x.xx', "a")).to.eql([array[0], array[1]]);
+  });
+
 });
 
 //-- Object --------------------------
