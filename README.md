@@ -69,5 +69,5 @@ Adds more functionality to the JavaScript data types.
   * Added array functions first, last, validIndex, normalizeIndex, indexesOf, swap, removeFrom, remove, insert, unique.
   * Added object functions typeOf, keyOf, keysOf.
   * Added string function format, both format and fmt are aliases.
-* **0.5.0 More array functions**
+* **0.5.0**
   * Array - hashify, findBy, findAllBy
