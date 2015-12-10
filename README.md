@@ -24,9 +24,9 @@ There are two ways to use the functions:
 		var Object = require('more-js/types/object');
 		var String = require('more-js/types/string');
 
-    Array.unique([1, 2, 2, 3]); // [1,2,3]
-    Object.typeOf([1, 2]); // array
-    String.fmt("{} text", "Sample"); // Sample text
+        Array.unique([1, 2, 2, 3]); // [1,2,3]
+        Object.typeOf([1, 2]); // array
+        String.fmt("{} text", "Sample"); // Sample text
 
 * **2. As member functions**
 
