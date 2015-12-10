@@ -7,12 +7,12 @@ More functions to work with.
   npm install --save more-js
 
 ## Usage
-There are two ways to use the functions:
+Currently there are two ways to use the functions:
 ### 1. As static functions (from v0.7)
-Just require the respective type and start using the static functions. For instance `var Array = require('more-js/types/array')`, would give you an Array namespace with all the functions. Then you can do operations like `var firstVal = Array.first(arr)`.
-* First argument fo all static function must fo of the respective type, i.e an Array object for all functions under Array.
+Just require the respective type, and start using the static functions. For instance `var Array = require('more-js/types/array')`, would give you an Array namespace with all the functions. Then you can have expressions like `firstVal = Array.first(arr)`.
+* First argument for all static function must be of the respective type, i.e All functions under Array would expect an array object as the first argument.
 * Currently functions are available for Arrays, Object & Strings. More types are in the pipeline.
-* Requiring any file under `more-js/types` would return a Namespace and they are not extended from any of the native data types.
+* Please note that requiring any file under `more-js/types` would return an object, and they are not extended from any of the native data types.
 
 Sample:
 ```
@@ -25,7 +25,7 @@ Object.typeOf([1, 2]); // array
 String.fmt("{} text", "Sample"); // Sample text
 String.fmt("Name: {lastName} {firstName}", {firstName:"Narendra", lastName: "Modi"}); // Name: Modi Narendra
 ```
-### 2. As member function (Would be deprecated)
+### 2. As member function (Would be deprecated in v1)
 
 You can have all these static members added as part the respective JavaScript data types. Just require more-js somewhere in your project, `require('more-js');`. Considering performance and safety, option #1 is a better approach.
 
@@ -101,3 +101,7 @@ npm test
 * **0.7.0**
   * Major performance changes - All the functions were moved into custom namespaces
   * Backward compatibility is maintained
+
+### Road-map
+* **0.8.0**
+  * Add Function type
