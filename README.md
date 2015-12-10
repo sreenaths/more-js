@@ -39,6 +39,7 @@ Adds more functionality to the JavaScript data types.
     * **Object.isBoolean(object)** - Returns true if object is a Boolean
     * **Object.isNumber(object)** - Returns true if object is a Number
     * **Object.isFunction(object)** - Returns true if object is a Function
+    * **Object.equals(object1, object2)** - Returns true if both objects have the same key-value pairs
   * Member
     * **{}.val(path)** - Gets the value at the specified key path. Keys in the path must be dot separated
     * **{}.keys()** - Return all keys of current object

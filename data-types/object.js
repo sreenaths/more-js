@@ -113,6 +113,27 @@ require("../helpers/inject")(Object.prototype, {
    */
   isFunction: function (object) {
     return typeof object === 'function';
+  },
+
+  /*
+   * Return true if the objects are equal
+   * @param obj1 {Object} First object to equate
+   * @param obj2 {Object} Second object to equate
+   * @return {Boolean}
+   */
+  equals: function(obj1, obj2) {
+    var property;
+    for(property in obj1) {
+      if(obj1[property] !== obj2[property]) {
+        return false;
+      }
+    }
+    for(property in obj2) {
+      if(obj1[property] !== obj2[property]) {
+        return false;
+      }
+    }
+    return true;
   }
 });
 

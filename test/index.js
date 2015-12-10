@@ -297,6 +297,17 @@ describe('Object', function() {
     expect(Object.isFunction(obj)).to.be.false;
   });
 
+  it('Object.equals', function() {
+    var fun = function () {};
+    expect(Object.equals({a:1}, {a:1})).to.be.true;
+    expect(Object.equals({a:1}, {b:2})).to.be.false;
+
+    expect(Object.equals({a:1, b:2}, {a:1, b:2})).to.be.true;
+    expect(Object.equals({a:1, b:2}, {b:2, a:1})).to.be.true;
+
+    expect(Object.equals({a:fun}, {a:fun})).to.be.true;
+  });
+
   it('{}.val', function() {
     var obj = {a: {b: {c: 101}}};
     assert.equal(obj.val('a.b.c'), obj.a.b.c);
