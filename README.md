@@ -11,8 +11,8 @@ Currently there are two ways to use the functions:
 ### 1. As static functions (from v0.7)
 Just require the respective type, and start using the static functions. For instance `var Array = require('more-js/types/array')`, would give you an Array namespace with all the functions. Then you can have expressions like `firstVal = Array.first(arr)`.
 * First argument for all static function must be of the respective type, i.e All functions under Array would expect an array object as the first argument.
-* Currently functions are available for Arrays, Object & Strings. More types are in the pipeline.
-* Please note that requiring any file under `more-js/types` would return an object, and they are not extended from any of the native data types.
+* Currently, functions are available for Arrays, Objects & Strings. More types are in the pipeline.
+* Please note that requiring any file under `more-js/types` would return a namespace (Object of functions), and they are not extended from any of the native data types.
 
 Sample:
 ```
@@ -27,9 +27,10 @@ String.fmt("Name: {lastName} {firstName}", {firstName:"Narendra", lastName: "Mod
 ```
 ### 2. As member function (Would be deprecated in v1)
 
-You can have all these static members added as part the respective JavaScript data types. Just require more-js somewhere in your project, `require('more-js');`. Considering performance and safety, option #1 is a better approach.
+You can have all these static members added as part the respective JavaScript data types. Just require more-js somewhere in your project, `require('more-js');`. Once required, all the functions will be available under the respective data types as member function. i.e, you would be able to do the following.
 
-Once required, all the functions will be available under the respective data types as member function. i.e, you would be able to do the following.
+Considering performance and safety, option #1 is a better approach. Hence #2 would be deprecated soon.
+
 ```
 [1, 3, 3, 4].unique().first(); // 1
 "{} text".fmt("Sample"); // Sample text
