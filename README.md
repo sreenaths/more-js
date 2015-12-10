@@ -7,44 +7,37 @@ More functions to work with.
   npm install --save more-js
 
 ## Usage
-
 There are two ways to use the functions:
+### 1. As static functions (from v0.7)
+Just require the respective type and start using the static functions. For instance `var Array = require('more-js/types/array')`, would give you an Array namespace with all the functions. Then you can do operations like `var firstVal = Array.first(arr)`.
+* First argument fo all static function must fo of the respective type, i.e an Array object for all functions under Array.
+* Currently functions are available for Arrays, Object & Strings. More types are in the pipeline.
+* Requiring any file under `more-js/types` would return a Namespace and they are not extended from any of the native data types.
 
-* **1. As static functions (from v0.7)**
+Sample:
+```
+var Array = require('more-js/types/array');
+var Object = require('more-js/types/object');
+var String = require('more-js/types/string');
 
-	Just require the respective type and start using the static functions. From a performance perspective this performs much better than member functions.
+Array.unique([1, 2, 2, 3]); // [1,2,3]
+Object.typeOf([1, 2]); // array
+String.fmt("{} text", "Sample"); // Sample text
+String.fmt("Name: {lastName} {firstName}", {firstName:"Narendra", lastName: "Modi"}); // Name: Modi Narendra
+```
+### 2. As member function
 
-	For instance `var Array = require('more-js/types/array')`, would giev you an Array namespace with all the functions. The you can do `Array.first(arr)` to get the first element in array arr. Always the first argument passed into a static function would be a javascript array instance.
+You can have all these static members added as part the respective JavaScript data types. Just require more-js somewhere in your project, `require('more-js');`. Considering performance and safer option #1 is a better approach.
 
-	Please not that namespace you get by requireing `more-js/types` is not extended from any of the native data types. Other than Arrays functions are availabel for Object & Strings.
-
-	More examples
-
-		var Array = require('more-js/types/array');
-		var Object = require('more-js/types/object');
-		var String = require('more-js/types/string');
-
-        Array.unique([1, 2, 2, 3]); // [1,2,3]
-        Object.typeOf([1, 2]); // array
-        String.fmt("{} text", "Sample"); // Sample text
-
-* **2. As member functions**
-
-	You can have all these statis members added as part the respective JavaScript datatypes. Just require more-js.
-
-	`require('more-js');`
-
-  Once required, all the functions will be availbale under the respective data types as member function.
-
-  That is you would be able to do the folowing.
-
-		[1, 3, 3, 4].unique().first(); // 1
-        "{} text".fmt("Sample"); // Sample text
-
+Once required, all the functions will be available under the respective data types as member function. i.e, you would be able to do the following.
+```
+[1, 3, 3, 4].unique().first(); // 1
+"{} text".fmt("Sample"); // Sample text
+```
 
 ## Functions
 
-* #### Array
+### Array
   * **Array.first(array)** - Returns the first element in the array
   * **Array.last(array)** - Returns the last element in the array
   * **Array.validIndex(array, index)** - Returns true if the index is in limit
@@ -61,7 +54,7 @@ There are two ways to use the functions:
   * **Array.findBy(array, path, value)** - Find first element from the array with matching value at the specified path. The function uses === for comparison
   * **Array.findAllBy(array, path, value)** - Finds all element from the array with matching value at the specified path. Uses === for comparison
 
-* #### Object
+### Object
   * **Object.typeOf(object)** - Returns correct type of object as a string. Fixes type for array, null, date, new Boolean, new Number, new String, RegExp, NaN & Infinity.
   * **Object.isObject(object)** - Returns true for non-null objects
   * **Object.isPlainObject(object)** - Returns true for a plain objects (non-null, not array, not dom element, not window, not any other basic types)
@@ -80,17 +73,15 @@ There are two ways to use the functions:
   * **Object.equals(objectA, objectB)** - Returns true if both objects have the same key-value pairs
   * **Object.inject(object, properties)** - Injects a set of non-enumerable properties into an object
 
-* #### String
+### String
   * **String.format([val1, val2...Key Object])** - Replaces the patterns in current string with the given values. Pattern can be {} or {argumentIndex} or {keyName}. {} will be replaced in the order of given arguments. Optionally a hash of key value pairs can be passed as last argument.
   * **String.fmt([val1, val2...Key Object])** - Just an alias for format
   * **String.removeTags()** - Removes HTML tags from current string
 
-## Tests
-
-  npm test
+## Running Tests
+npm test
 
 ## Release History
-
 * **0.1.0 Initial release**
 * **0.2.0 Added string support**
   * Added fmt(formatter) function to String.
