@@ -25,9 +25,9 @@ Object.typeOf([1, 2]); // array
 String.fmt("{} text", "Sample"); // Sample text
 String.fmt("Name: {lastName} {firstName}", {firstName:"Narendra", lastName: "Modi"}); // Name: Modi Narendra
 ```
-### 2. As member function
+### 2. As member function (Would be deprecated)
 
-You can have all these static members added as part the respective JavaScript data types. Just require more-js somewhere in your project, `require('more-js');`. Considering performance and safer option #1 is a better approach.
+You can have all these static members added as part the respective JavaScript data types. Just require more-js somewhere in your project, `require('more-js');`. Considering performance and safety, option #1 is a better approach.
 
 Once required, all the functions will be available under the respective data types as member function. i.e, you would be able to do the following.
 ```
