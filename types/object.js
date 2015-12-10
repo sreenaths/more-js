@@ -1,10 +1,11 @@
 "use strict"
 
-//-- Static functions -------------------------
-require("../helpers/inject")(Object.prototype, {
+var MoreString = require('./string'),
+
+    MoreObject = {
 
   /*
-   * Returns type string of an object
+   * Returns type of an object as a string
    * @param object {Object}
    * @return {String}
    */
@@ -117,72 +118,66 @@ require("../helpers/inject")(Object.prototype, {
 
   /*
    * Return true if the objects are equal
-   * @param obj1 {Object} First object to equate
-   * @param obj2 {Object} Second object to equate
+   * @param objectA {Object} First object to equate
+   * @param objectB {Object} Second object to equate
    * @return {Boolean}
    */
-  equals: function(obj1, obj2) {
+  equals: function(objectA, objectB) {
     var property;
-    for(property in obj1) {
-      if(obj1[property] !== obj2[property]) {
+    for(property in objectA) {
+      if(objectA[property] !== objectB[property]) {
         return false;
       }
     }
-    for(property in obj2) {
-      if(obj1[property] !== obj2[property]) {
+    for(property in objectB) {
+      if(objectA[property] !== objectB[property]) {
         return false;
       }
     }
     return true;
-  }
-});
-
-//-- Member functions -------------------------
-require("../helpers/inject")(Object.prototype, {
-
-  /*
-   * Gets the value at the specified key path
-   * @param  path {String} Key path to a property inside the object. Dot separated
-   */
-  val: function(path) {
-    var properties = path.split('.'),
-        value = this;
-
-    while(value !== undefined && properties.length) {
-      value = value[properties.shift()];
-    }
-    return value;
   },
 
   /*
-   * Return all keys of current object
-   @param none
-   @return {Array} Array of keys
+   * Gets the value at the specified key path
+   * @params object {Object}
+   * @param  path {String} Key path to a property inside the object. Dot separated
    */
-  keys: function () {
-    return Object.keys(this);
+  val: function(object, path) {
+    var properties = path.split('.');
+
+    while(object !== undefined && properties.length) {
+      object = object[properties.shift()];
+    }
+    return object;
   },
 
   /*
    * Return an array of all values in the object
-   * @param none
+   * @params object {Object}
    * @return {Array} Array of values
    */
-  values: function () {
-    var values = [];
-    Object.keys(this).forEach(function (key) {
-      values.push(this[key]);
-    }, this);
-    return values;
+  values: function (object) {
+    return Object.keys(object).map
+    (function (key) {
+      return object[key];
+    });
   },
 
   /*
+   * Return all keys of current object
+   * @params object {Object}
+   * @return {Array} Array of keys
+   */
+  keys: Object.keys,
+
+  /*
    * Given a value does a reverse look-up for a key
+   * @params object {Object}
    * @param value Any javascript variable
    * @param key {String}
    */
-  keyOf: function (value) {
-    var keys = this.keys(),
+  keyOf: function (object, value) {
+    var keys = Object.keys(object),
         key,
         index = 0,
         length = keys.length;
@@ -190,7 +185,7 @@ require("../helpers/inject")(Object.prototype, {
     while(index < length) {
       key = keys[index++];
 
-      if(this[key] === value) {
+      if(object[key] === value) {
         return key;
       }
     }
@@ -199,55 +194,81 @@ require("../helpers/inject")(Object.prototype, {
 
   /*
    * Given a value does a reverse look-up for all matching keys
+   * @params object {Object}
    * @param value Any javascript variable
    * @param keys {Array}
    */
-  keysOf: function (value) {
-    var keys = [];
-
-    this.keys().forEach(function (key) {
-      if(this[key] === value) {
-        keys.push(key);
+  keysOf: function (object, value) {
+    return Object.keys(object).filter(function (key) {
+      if(object[key] === value) {
+        return key;
       }
-    }, this);
-
-    return keys;
+    });
   },
 
   /*
    * Adds the missing forEach function for Objects
+   * @params object {Object}
    * @param callback {Function} The function will be called with two arguments, key and value
    * @return none
    */
-  forEach: function (callback) {
-    Object.keys(this).forEach(function (key) {
-      callback(key, this[key]);
-    }, this);
+  forEach: function (object, callback, context) {
+    Object.keys(object).forEach(function (key) {
+      callback.call(context, key, object[key]);
+    });
   },
 
   /*
-   * Recursively merge an object to the current object
-   * @param object {Object} Object to merge
+   * Recursively merge two plain objects
+   * @params targetObject {Object} Data would be merged to this object
+   * @param sourceObject {Object} Object to merge
    * @param appendArray {Boolean} Default false.
+   * @return
    */
-  merge: function(object, appendArray) {
-    if(!Array.isPlainObject(object)) {
-      throw new Error("Merge Failed: Cannot merge {} and {}".fmt(Object.typeOf(this), Object.typeOf(object)));
+  merge: function(targetObject, sourceObject, appendArray) {
+    if(!MoreObject.isPlainObject(targetObject) || !MoreObject.isPlainObject(sourceObject)) {
+      throw new Error(MoreString.fmt(
+        "Merge Failed: Cannot merge {} and {}",
+        MoreObject.typeOf(targetObject),
+        MoreObject.typeOf(sourceObject)
+      ));
     }
 
-    Object.keys(object).forEach(function (key) {
-      var val = this[key];
-      if(
-        (Array.isPlainObject(val) && Object.isPlainObject(object[key])) ||
-        (Array.isArray(val) && Object.isArray(object[key]))
-      ) {
-        this[key].merge(object[key], appendArray);
+    MoreObject.keys(sourceObject).forEach(function (key) {
+      var targetVal = targetObject[key],
+          sourceVal = sourceObject[key],
+          MoreArray;
+
+      if(MoreObject.isPlainObject(targetVal) && MoreObject.isPlainObject(sourceVal)) {
+        MoreObject.merge(targetVal, sourceVal, appendArray);
+      }
+      else if(Array.isArray(targetVal) && Array.isArray(sourceVal)) {
+        MoreArray = require('./array'),
+        MoreArray.merge(targetVal, sourceVal, appendArray);
       }
       else {
-        this[key] = object[key];
+        targetObject[key] = sourceVal;
       }
-    }, this);
+    });
 
-    return this;
+    return targetObject;
+  },
+
+  /*
+   * Injects a set of values as non-enumerable properties of an object.
+   * Old value if any would be available at newValue._old_.
+   * @params object {Object} Object to inject to
+   * @params properties {Object} Key-value hash of properties
+   * @return none
+   */
+  inject: function (object, properties) {
+    MoreObject.forEach(properties, function (key, value) {
+      // Inject value
+      Object.defineProperty(object, key, {
+        value: value
+      });
+    });
   }
-});
+};
+
+module.exports = MoreObject;

@@ -297,15 +297,18 @@ describe('Object', function() {
     expect(Object.isFunction(obj)).to.be.false;
   });
 
-  it('Object.equals', function() {
-    var fun = function () {};
-    expect(Object.equals({a:1}, {a:1})).to.be.true;
-    expect(Object.equals({a:1}, {b:2})).to.be.false;
+  it('{}.equals', function() {
+    var obj = {a: 1},
+        fun = function () {};
+    expect(obj.equals({a:1})).to.be.true;
+    expect(obj.equals({b:2})).to.be.false;
 
-    expect(Object.equals({a:1, b:2}, {a:1, b:2})).to.be.true;
-    expect(Object.equals({a:1, b:2}, {b:2, a:1})).to.be.true;
+    obj = {a:1, b:2};
+    expect(obj.equals({a:1, b:2})).to.be.true;
+    expect(obj.equals({b:2, a:1})).to.be.true;
 
-    expect(Object.equals({a:fun}, {a:fun})).to.be.true;
+    obj = {a:fun};
+    expect(obj.equals({a:fun})).to.be.true;
   });
 
   it('{}.val', function() {
@@ -389,42 +392,57 @@ describe('Object', function() {
     }
     expect(invalidMerge).to.throw(Error);
   });
+
+  it('{}.inject', function() {
+    var obj = {a: 1};
+    obj.inject({b: 2, c: 3});
+
+    expect(obj.keys()).to.have.length(1);
+    expect(obj.keys()).to.eql(["a"]);
+
+    expect(obj.values()).to.have.length(1);
+    expect(obj.values()).to.eql([1]);
+
+    assert.equal(obj.val("a"), 1);
+    assert.equal(obj.val("b"), 2);
+    assert.equal(obj.val("c"), 3);
+  });
 });
 
 //-- String --------------------------
 describe('String', function() {
-  it('"".format', function() {
+  it('"".fmt', function() {
     var paramObj = {
       x: 1,
       y: 2
     };
 
-    assert.equal("abc".format(), "abc");
-    assert.equal("abc".format(1, 2), "abc");
-    assert.equal("abc{}".format(), "abc");
+    assert.equal("abc".fmt(), "abc");
+    assert.equal("abc".fmt(1, 2), "abc");
+    assert.equal("abc{}".fmt(), "abc");
 
     // Auto index
-    assert.equal("a{}b{}c".format(1, 2), "a1b2c");
-    assert.equal("a{}{}c".format(1, 2), "a12c");
-    assert.equal("a{}{}{}c".format(1, 2), "a12c"); // False
+    assert.equal("a{}b{}c".fmt(1, 2), "a1b2c");
+    assert.equal("a{}{}c".fmt(1, 2), "a12c");
+    assert.equal("a{}{}{}c".fmt(1, 2), "a12c"); // False
 
     // Indexed
-    assert.equal("a{0}b{1}c".format(1, 2), "a1b2c");
-    assert.equal("a{1}b{0}c".format(1, 2), "a2b1c");
+    assert.equal("a{0}b{1}c".fmt(1, 2), "a1b2c");
+    assert.equal("a{1}b{0}c".fmt(1, 2), "a2b1c");
 
     // Key based
-    assert.equal("a{x}b{y}c".format(paramObj), "a1b2c");
-    assert.equal("a{y}b{x}c".format(paramObj), "a2b1c");
+    assert.equal("a{x}b{y}c".fmt(paramObj), "a1b2c");
+    assert.equal("a{y}b{x}c".fmt(paramObj), "a2b1c");
 
     // Index + Key
-    assert.equal("a{}{0}b{y}c".format(3, paramObj), "a33b2c");
-    assert.equal("a{}{0}{}b{y}c".format(3, 4, paramObj), "a334b2c");
-    assert.equal("a{}{1}{}b{y}c".format(3, 4, paramObj), "a344b2c");
-    assert.equal("a{1}{}{1}b{y}c".format(3, 4, paramObj), "a434b2c");
+    assert.equal("a{}{0}b{y}c".fmt(3, paramObj), "a33b2c");
+    assert.equal("a{}{0}{}b{y}c".fmt(3, 4, paramObj), "a334b2c");
+    assert.equal("a{}{1}{}b{y}c".fmt(3, 4, paramObj), "a344b2c");
+    assert.equal("a{1}{}{1}b{y}c".fmt(3, 4, paramObj), "a434b2c");
 
     //Escaped
-    assert.equal("a}b{}c".format(1, 2), "a}b1c");
-    //assert.equal("a\{\}b{}c".format(1, 2), "a{b1c"); // TODO: Dont convert escaped patterns
+    assert.equal("a}b{}c".fmt(1, 2), "a}b1c");
+    //assert.equal("a\{\}b{}c".fmt(1, 2), "a{b1c"); // TODO: Dont convert escaped patterns
   });
 
   it('"".removeTags', function() {
