@@ -51,6 +51,7 @@ Adds more functionality to the JavaScript data types.
 * #### String
   * **"".format([val1, val2...Key Object])** - Replaces the patterns in current string with the given values. Pattern can be {} or {argumentIndex} or {keyName}. {} will be replaced in the order of given arguments. Optionally a hash of key value pairs can be passed as last argument.
   * **"".fmt([val1, val2...Key Object])** - Just an alias for format
+  * **"".removeTags()** - Removes HTML tags from current string
 
 ## Tests
 

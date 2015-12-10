@@ -37,5 +37,13 @@ require("../helpers/inject")(String.prototype, {
    * @return formatted string
    */
   fmt: format,
-  format: format
+  format: format,
+
+  /*
+   * Removes HTML tags from a string.
+   * @return {String}
+   */
+  removeTags: function() {
+    return this.replace(/<(.*?)>/g, "");
+  }
 });

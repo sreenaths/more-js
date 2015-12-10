@@ -415,4 +415,18 @@ describe('String', function() {
     assert.equal("a}b{}c".format(1, 2), "a}b1c");
     //assert.equal("a\{\}b{}c".format(1, 2), "a{b1c"); // TODO: Dont convert escaped patterns
   });
+
+  it('"".removeTags', function() {
+
+    assert.equal("abc".removeTags(), "abc");
+    assert.equal("<a>abc</a>".removeTags(), "abc");
+    assert.equal("ab<a>c".removeTags(), "abc");
+    assert.equal("abc<br/>".removeTags(), "abc");
+
+    assert.equal("<a>ab>c</a>".removeTags(), "ab>c");
+    assert.equal("<a>a<bc</a>".removeTags(), "a");
+
+    assert.equal("<a>abc</a>>d".removeTags(), "abc>d");
+    assert.equal("<a>abc</a><d".removeTags(), "abc<d");
+  });
 });
