@@ -1,0 +1,25 @@
+{
+  "name": "more-js",
+  "description": "More functions to work with.",
+  "main": "index.js",
+  "authors": [
+    "Sreenath Somarajapuram <somarajapuram@gmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "javascript",
+    "data",
+    "types",
+    "more",
+    "functionalities"
+  ],
+  "homepage": "https://github.com/sreenaths/more-js",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
