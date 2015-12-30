@@ -102,7 +102,10 @@ npm test
 * **0.7.0**
   * Major performance changes - All the functions were moved into custom namespaces
   * Backward compatibility is maintained
+* **0.8.0**
+  * Added more.js, a namespace for all the types
+  * Added browserify based build to convert more.js into a generic distributable form
 
 ### Road-map
-* **0.8.0**
+* **0.9.0**
   * Add Function type
