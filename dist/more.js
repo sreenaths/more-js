@@ -1,25 +1,330 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-"use strict"
+"use strict";
 
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    global.moment = factory()
-}(this, function () { 'use strict';
-  return {
-    Object: require('./types/object'),
-    String: require('./types/string'),
-    Array: require('./types/array'),
-    Function: require('./types/function')
-  };
-}));
-},{"./types/array":2,"./types/function":3,"./types/object":4,"./types/string":5}],2:[function(require,module,exports){
-"use strict"
+/**
+ * More.js - Distributable
+ */
 
-var MoreObject = require('./object'),
-    MoreString = require('./string'),
+var MoreString = {
+  /*
+   * Replaces the patterns in current string with the given values.
+   * Pattern can be {} or {argumentIndex} or {keyName}. {} will be replaced in the order of arguments.
+   * Optionally a hash of key value pairs can be passed as last argument.
+   * @param string {String} String to format
+   * @params [val1, val2 ... Key Object]
+   * @return formatted string
+   */
+  fmt: function (string) {
+    var stringParts = string.split(/{(.*?)}/),
+        finalString = [],
+        key,
+        i, blankPatternCount, partCount,
+        argLength, paramObject;
 
-    MoreArray = {
+    finalString.shift.apply(arguments);
+
+    argLength = arguments.length,
+    paramObject = arguments[argLength - 1];
+
+    if(stringParts.length > 2) {
+      if(typeof paramObject !== "object") paramObject = {};
+
+      for(i = 0, blankPatternCount = 0, partCount = stringParts.length - 1; i < partCount; i++) {
+        finalString.push(stringParts[i]);
+        if(key = stringParts[++i]) {
+          finalString.push(paramObject[key] || arguments[key] || '');
+        }
+        else if(blankPatternCount < argLength){
+          finalString.push(arguments[blankPatternCount]);
+          blankPatternCount++;
+        }
+      }
+      finalString.push(stringParts[partCount]);
+
+      return finalString.join('');
+    }
+
+    return string;
+  },
+
+  /*
+   * Removes HTML tags from a string.
+   * @param string {String}
+   * @return {String}
+   */
+  removeTags: function(string) {
+    return string.replace(/<(.*?)>/g, "");
+  }
+};
+
+var MoreObject = {
+
+  /*
+   * Returns type of an object as a string
+   * @param object {Object}
+   * @return {String}
+   */
+  typeOf: function (object) {
+    var type = typeof object;
+    switch(type) {
+      case "object":
+        if(Object.isArray(object)) {
+          type = "array";
+        }
+        else if (object === null) {
+          type = "null";
+        }
+        else if(object instanceof RegExp) {
+          type = "regexp";
+        }
+        else if(object instanceof Date) {
+          type = "date";
+        }
+        else if(object instanceof Boolean) {
+          type = "boolean";
+        }
+        else if(object instanceof Number) {
+          type = "number";
+        }
+        else if(object instanceof String) {
+          type = "string";
+        }
+      break;
+      case "number":
+        if(isNaN(object)) {
+          type = "nan";
+        }
+        else if (object === Infinity) {
+          type = "infinity";
+        }
+      break;
+    }
+    return type;
+  },
+
+  /*
+   * Returns true for non-null objects
+   * @param object {Object}
+   * @return {Boolean}
+   */
+  isObject: function (object) {
+    return !!object && typeof object === 'object';
+  },
+
+  /*
+   * Returns true for a plain objects - non-null, not array, not dom element, not window, not any other basic types
+   * @param object {Object}
+   * @return {Boolean}
+   */
+  isPlainObject: function (object) {
+    // Check for null || object || array || dom element || window
+    if(!object ||
+        typeof object !== 'object' ||
+        Array.isArray(object) ||
+        object.nodeType ||
+        object.Object === Object) {
+      return false;
+    }
+    return true;
+  },
+
+  /*
+   * Returns true if object is an Array
+   * @param object {Object}
+   * @return {Boolean}
+   */
+  isArray: Array.isArray,
+
+  /*
+   * Returns true if object is a String
+   * @param object {Object}
+   * @return {Boolean}
+   */
+  isString: function (object) {
+    return typeof object === 'string';
+  },
+
+  /*
+   * Returns true if object is Boolean
+   * @param object {Object}
+   * @return {Boolean}
+   */
+  isBoolean: function (object) {
+    return typeof object === 'boolean';
+  },
+
+  /*
+   * Returns true if object is a Number
+   * @param object {Object}
+   * @return {Boolean}
+   */
+  isNumber: function (object) {
+    return typeof object === 'number';
+  },
+
+  /*
+   * Returns true if object is NaN
+   * @param object {Object}
+   * @return {Boolean}
+   */
+  isFunction: function (object) {
+    return typeof object === 'function';
+  },
+
+  /*
+   * Return true if the objects are equal
+   * @param objectA {Object} First object to equate
+   * @param objectB {Object} Second object to equate
+   * @return {Boolean}
+   */
+  equals: function(objectA, objectB) {
+    var property;
+    for(property in objectA) {
+      if(objectA[property] !== objectB[property]) {
+        return false;
+      }
+    }
+    for(property in objectB) {
+      if(objectA[property] !== objectB[property]) {
+        return false;
+      }
+    }
+    return true;
+  },
+
+  /*
+   * Gets the value at the specified key path
+   * @params object {Object}
+   * @param  path {String} Key path to a property inside the object. Dot separated
+   */
+  val: function(object, path) {
+    var properties = path.split('.');
+
+    while(object !== undefined && properties.length) {
+      object = object[properties.shift()];
+    }
+    return object;
+  },
+
+  /*
+   * Return an array of all values in the object
+   * @params object {Object}
+   * @return {Array} Array of values
+   */
+  values: function (object) {
+    return Object.keys(object).map
+    (function (key) {
+      return object[key];
+    });
+  },
+
+  /*
+   * Return all keys of current object
+   * @params object {Object}
+   * @return {Array} Array of keys
+   */
+  keys: Object.keys,
+
+  /*
+   * Given a value does a reverse look-up for a key
+   * @params object {Object}
+   * @param value Any javascript variable
+   * @param key {String}
+   */
+  keyOf: function (object, value) {
+    var keys = Object.keys(object),
+        key,
+        index = 0,
+        length = keys.length;
+
+    while(index < length) {
+      key = keys[index++];
+
+      if(object[key] === value) {
+        return key;
+      }
+    }
+    return undefined;
+  },
+
+  /*
+   * Given a value does a reverse look-up for all matching keys
+   * @params object {Object}
+   * @param value Any javascript variable
+   * @param keys {Array}
+   */
+  keysOf: function (object, value) {
+    return Object.keys(object).filter(function (key) {
+      if(object[key] === value) {
+        return key;
+      }
+    });
+  },
+
+  /*
+   * Adds the missing forEach function for Objects
+   * @params object {Object}
+   * @param callback {Function} The function will be called with two arguments, key and value
+   * @return none
+   */
+  forEach: function (object, callback, context) {
+    Object.keys(object).forEach(function (key) {
+      callback.call(context, key, object[key]);
+    });
+  },
+
+  /*
+   * Recursively merge two plain objects
+   * @params targetObject {Object} Data would be merged to this object
+   * @param sourceObject {Object} Object to merge
+   * @param appendArray {Boolean} Default false.
+   * @return
+   */
+  merge: function(targetObject, sourceObject, appendArray) {
+    if(!MoreObject.isPlainObject(targetObject) || !MoreObject.isPlainObject(sourceObject)) {
+      throw new Error(MoreString.fmt(
+        "Merge Failed: Cannot merge {} and {}",
+        MoreObject.typeOf(targetObject),
+        MoreObject.typeOf(sourceObject)
+      ));
+    }
+
+    MoreObject.keys(sourceObject).forEach(function (key) {
+      var targetVal = targetObject[key],
+          sourceVal = sourceObject[key],
+          MoreArray;
+
+      if(MoreObject.isPlainObject(targetVal) && MoreObject.isPlainObject(sourceVal)) {
+        MoreObject.merge(targetVal, sourceVal, appendArray);
+      }
+      else if(Array.isArray(targetVal) && Array.isArray(sourceVal)) {
+        MoreArray.merge(targetVal, sourceVal, appendArray);
+      }
+      else {
+        targetObject[key] = sourceVal;
+      }
+    });
+
+    return targetObject;
+  },
+
+  /*
+   * Injects a set of values as non-enumerable properties of an object.
+   * Old value if any would be available at newValue._old_.
+   * @params object {Object} Object to inject to
+   * @params properties {Object} Key-value hash of properties
+   * @return none
+   */
+  inject: function (object, properties) {
+    MoreObject.forEach(properties, function (key, value) {
+      // Inject value
+      Object.defineProperty(object, key, {
+        value: value
+      });
+    });
+  }
+};
+
+var MoreArray = {
 
   /*
    * Returns the first element in the array
@@ -306,349 +611,14 @@ var MoreObject = require('./object'),
   },
 };
 
-module.exports = MoreArray;
-},{"./object":4,"./string":5}],3:[function(require,module,exports){
-"use strict"
-
-var MoreFunction = {
-  // functionInfo: Return functionName, argumentNames, argumentsUsed, returnsValue, nativeCode;
-  // Infer all these details from fun.toString();
-  // Make separate getters for the above properties
-
-  // void: empty function
-};
-
-modules.exports = MoreFunction;
-},{}],4:[function(require,module,exports){
-"use strict"
-
-var MoreString = require('./string'),
-
-    MoreObject = {
-
-  /*
-   * Returns type of an object as a string
-   * @param object {Object}
-   * @return {String}
-   */
-  typeOf: function (object) {
-    var type = typeof object;
-    switch(type) {
-      case "object":
-        if(Object.isArray(object)) {
-          type = "array";
-        }
-        else if (object === null) {
-          type = "null";
-        }
-        else if(object instanceof RegExp) {
-          type = "regexp";
-        }
-        else if(object instanceof Date) {
-          type = "date";
-        }
-        else if(object instanceof Boolean) {
-          type = "boolean";
-        }
-        else if(object instanceof Number) {
-          type = "number";
-        }
-        else if(object instanceof String) {
-          type = "string";
-        }
-      break;
-      case "number":
-        if(isNaN(object)) {
-          type = "nan";
-        }
-        else if (object === Infinity) {
-          type = "infinity";
-        }
-      break;
-    }
-    return type;
-  },
-
-  /*
-   * Returns true for non-null objects
-   * @param object {Object}
-   * @return {Boolean}
-   */
-  isObject: function (object) {
-    return !!object && typeof object === 'object';
-  },
-
-  /*
-   * Returns true for a plain objects - non-null, not array, not dom element, not window, not any other basic types
-   * @param object {Object}
-   * @return {Boolean}
-   */
-  isPlainObject: function (object) {
-    // Check for null || object || array || dom element || window
-    if(!object ||
-        typeof object !== 'object' ||
-        Array.isArray(object) ||
-        object.nodeType ||
-        object.Object === Object) {
-      return false;
-    }
-    return true;
-  },
-
-  /*
-   * Returns true if object is an Array
-   * @param object {Object}
-   * @return {Boolean}
-   */
-  isArray: Array.isArray,
-
-  /*
-   * Returns true if object is a String
-   * @param object {Object}
-   * @return {Boolean}
-   */
-  isString: function (object) {
-    return typeof object === 'string';
-  },
-
-  /*
-   * Returns true if object is Boolean
-   * @param object {Object}
-   * @return {Boolean}
-   */
-  isBoolean: function (object) {
-    return typeof object === 'boolean';
-  },
-
-  /*
-   * Returns true if object is a Number
-   * @param object {Object}
-   * @return {Boolean}
-   */
-  isNumber: function (object) {
-    return typeof object === 'number';
-  },
-
-  /*
-   * Returns true if object is NaN
-   * @param object {Object}
-   * @return {Boolean}
-   */
-  isFunction: function (object) {
-    return typeof object === 'function';
-  },
-
-  /*
-   * Return true if the objects are equal
-   * @param objectA {Object} First object to equate
-   * @param objectB {Object} Second object to equate
-   * @return {Boolean}
-   */
-  equals: function(objectA, objectB) {
-    var property;
-    for(property in objectA) {
-      if(objectA[property] !== objectB[property]) {
-        return false;
-      }
-    }
-    for(property in objectB) {
-      if(objectA[property] !== objectB[property]) {
-        return false;
-      }
-    }
-    return true;
-  },
-
-  /*
-   * Gets the value at the specified key path
-   * @params object {Object}
-   * @param  path {String} Key path to a property inside the object. Dot separated
-   */
-  val: function(object, path) {
-    var properties = path.split('.');
-
-    while(object !== undefined && properties.length) {
-      object = object[properties.shift()];
-    }
-    return object;
-  },
-
-  /*
-   * Return an array of all values in the object
-   * @params object {Object}
-   * @return {Array} Array of values
-   */
-  values: function (object) {
-    return Object.keys(object).map
-    (function (key) {
-      return object[key];
-    });
-  },
-
-  /*
-   * Return all keys of current object
-   * @params object {Object}
-   * @return {Array} Array of keys
-   */
-  keys: Object.keys,
-
-  /*
-   * Given a value does a reverse look-up for a key
-   * @params object {Object}
-   * @param value Any javascript variable
-   * @param key {String}
-   */
-  keyOf: function (object, value) {
-    var keys = Object.keys(object),
-        key,
-        index = 0,
-        length = keys.length;
-
-    while(index < length) {
-      key = keys[index++];
-
-      if(object[key] === value) {
-        return key;
-      }
-    }
-    return undefined;
-  },
-
-  /*
-   * Given a value does a reverse look-up for all matching keys
-   * @params object {Object}
-   * @param value Any javascript variable
-   * @param keys {Array}
-   */
-  keysOf: function (object, value) {
-    return Object.keys(object).filter(function (key) {
-      if(object[key] === value) {
-        return key;
-      }
-    });
-  },
-
-  /*
-   * Adds the missing forEach function for Objects
-   * @params object {Object}
-   * @param callback {Function} The function will be called with two arguments, key and value
-   * @return none
-   */
-  forEach: function (object, callback, context) {
-    Object.keys(object).forEach(function (key) {
-      callback.call(context, key, object[key]);
-    });
-  },
-
-  /*
-   * Recursively merge two plain objects
-   * @params targetObject {Object} Data would be merged to this object
-   * @param sourceObject {Object} Object to merge
-   * @param appendArray {Boolean} Default false.
-   * @return
-   */
-  merge: function(targetObject, sourceObject, appendArray) {
-    if(!MoreObject.isPlainObject(targetObject) || !MoreObject.isPlainObject(sourceObject)) {
-      throw new Error(MoreString.fmt(
-        "Merge Failed: Cannot merge {} and {}",
-        MoreObject.typeOf(targetObject),
-        MoreObject.typeOf(sourceObject)
-      ));
-    }
-
-    MoreObject.keys(sourceObject).forEach(function (key) {
-      var targetVal = targetObject[key],
-          sourceVal = sourceObject[key],
-          MoreArray;
-
-      if(MoreObject.isPlainObject(targetVal) && MoreObject.isPlainObject(sourceVal)) {
-        MoreObject.merge(targetVal, sourceVal, appendArray);
-      }
-      else if(Array.isArray(targetVal) && Array.isArray(sourceVal)) {
-        MoreArray = require('./array'),
-        MoreArray.merge(targetVal, sourceVal, appendArray);
-      }
-      else {
-        targetObject[key] = sourceVal;
-      }
-    });
-
-    return targetObject;
-  },
-
-  /*
-   * Injects a set of values as non-enumerable properties of an object.
-   * Old value if any would be available at newValue._old_.
-   * @params object {Object} Object to inject to
-   * @params properties {Object} Key-value hash of properties
-   * @return none
-   */
-  inject: function (object, properties) {
-    MoreObject.forEach(properties, function (key, value) {
-      // Inject value
-      Object.defineProperty(object, key, {
-        value: value
-      });
-    });
-  }
-};
-
-module.exports = MoreObject;
-
-},{"./array":2,"./string":5}],5:[function(require,module,exports){
-"use strict"
-
-var MoreString = {
-  /*
-   * Replaces the patterns in current string with the given values.
-   * Pattern can be {} or {argumentIndex} or {keyName}. {} will be replaced in the order of arguments.
-   * Optionally a hash of key value pairs can be passed as last argument.
-   * @param string {String} String to format
-   * @params [val1, val2 ... Key Object]
-   * @return formatted string
-   */
-  fmt: function (string) {
-    var stringParts = string.split(/{(.*?)}/),
-        finalString = [],
-        key,
-        i, blankPatternCount, partCount,
-        argLength, paramObject;
-
-    finalString.shift.apply(arguments);
-
-    argLength = arguments.length,
-    paramObject = arguments[argLength - 1];
-
-    if(stringParts.length > 2) {
-      if(typeof paramObject !== "object") paramObject = {};
-
-      for(i = 0, blankPatternCount = 0, partCount = stringParts.length - 1; i < partCount; i++) {
-        finalString.push(stringParts[i]);
-        if(key = stringParts[++i]) {
-          finalString.push(paramObject[key] || arguments[key] || '');
-        }
-        else if(blankPatternCount < argLength){
-          finalString.push(arguments[blankPatternCount]);
-          blankPatternCount++;
-        }
-      }
-      finalString.push(stringParts[partCount]);
-
-      return finalString.join('');
-    }
-
-    return string;
-  },
-
-  /*
-   * Removes HTML tags from a string.
-   * @param string {String}
-   * @return {String}
-   */
-  removeTags: function(string) {
-    return string.replace(/<(.*?)>/g, "");
-  }
-};
-
-module.exports = MoreString;
-},{}]},{},[1]);
+(function (global, factory) {
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    global.more = factory()
+}(this, function () {
+  return {
+    Object: MoreObject,
+    String: MoreString,
+    Array: MoreArray
+  };
+}));

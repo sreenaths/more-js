@@ -1,11 +1,10 @@
 {
   "name": "more-js",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "More functions to work with.",
   "main": "index.js",
   "scripts": {
-    "test": "make test",
-    "build": "browserify more.js > dist/more.js"
+    "test": "make test"
   },
   "repository": {
     "type": "git",
@@ -25,7 +24,6 @@
   },
   "homepage": "https://github.com/sreenaths/more-js#readme",
   "devDependencies": {
-    "browserify": "^12.0.1",
     "chai": "^3.2.0",
     "mocha": "^2.2.5"
   }

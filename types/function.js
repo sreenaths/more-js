@@ -8,4 +8,4 @@ var MoreFunction = {
   // void: empty function
 };
 
-modules.exports = MoreFunction;
+module.exports = MoreFunction;
