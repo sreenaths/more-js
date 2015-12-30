@@ -420,6 +420,7 @@ describe('String', function() {
     assert.equal("abc".fmt(), "abc");
     assert.equal("abc".fmt(1, 2), "abc");
     assert.equal("abc{}".fmt(), "abc");
+    assert.equal("abc".fmt({}), "abc");
 
     // Auto index
     assert.equal("a{}b{}c".fmt(1, 2), "a1b2c");

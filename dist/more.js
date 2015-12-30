@@ -20,7 +20,8 @@ var MoreString = {
         i, blankPatternCount, partCount,
         argLength, paramObject;
 
-    finalString.shift.apply(arguments);
+    arguments = finalString.slice.call(arguments);
+    arguments.shift();
 
     argLength = arguments.length,
     paramObject = arguments[argLength - 1];
