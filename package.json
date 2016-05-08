@@ -1,6 +1,6 @@
 {
   "name": "more-js",
-  "version": "0.8.4",
+  "version": "0.8.6",
   "description": "More functions to work with.",
   "main": "index.js",
   "scripts": {
