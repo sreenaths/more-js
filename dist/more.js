@@ -16,15 +16,15 @@ var MoreString = {
   fmt: function (string) {
     var stringParts = string.split(/{(.*?)}/),
         finalString = [],
-        key,
+        key, value, splitPos,
         i, blankPatternCount, partCount,
-        argLength, paramObject;
+        argLength, paramObject, args;
 
-    arguments = finalString.slice.call(arguments);
-    arguments.shift();
+    args = finalString.slice.call(arguments);
+    args.shift();
 
-    argLength = arguments.length,
-    paramObject = arguments[argLength - 1];
+    argLength = args.length,
+    paramObject = args[argLength - 1];
 
     if(stringParts.length > 2) {
       if(typeof paramObject !== "object") paramObject = {};
@@ -32,10 +32,31 @@ var MoreString = {
       for(i = 0, blankPatternCount = 0, partCount = stringParts.length - 1; i < partCount; i++) {
         finalString.push(stringParts[i]);
         if(key = stringParts[++i]) {
-          finalString.push(paramObject[key] || arguments[key] || '');
+          splitPos = key.indexOf(":");
+          if(splitPos !== -1) {
+            value = key.substr(splitPos + 1);
+            key = key.substr(0, splitPos);
+          }
+          else {
+            value = undefined;
+          }
+
+          if(!key && blankPatternCount < argLength){
+            key = args[blankPatternCount];
+            blankPatternCount++;
+          }
+
+          if(paramObject.hasOwnProperty(key)) {
+            value = paramObject[key];
+          }
+          else if(args.hasOwnProperty(key)) {
+            value = args[key];
+          }
+
+          finalString.push(value);
         }
         else if(blankPatternCount < argLength){
-          finalString.push(arguments[blankPatternCount]);
+          finalString.push(args[blankPatternCount]);
           blankPatternCount++;
         }
       }
