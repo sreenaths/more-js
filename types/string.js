@@ -12,15 +12,15 @@ var MoreString = {
   fmt: function (string) {
     var stringParts = string.split(/{(.*?)}/),
         finalString = [],
-        key,
+        key, defaultVal, splitPos,
         i, blankPatternCount, partCount,
-        argLength, paramObject;
+        argLength, paramObject, args;
 
-    arguments = finalString.slice.call(arguments);
-    arguments.shift();
+    args = finalString.slice.call(arguments);
+    args.shift();
 
-    argLength = arguments.length,
-    paramObject = arguments[argLength - 1];
+    argLength = args.length,
+    paramObject = args[argLength - 1];
 
     if(stringParts.length > 2) {
       if(typeof paramObject !== "object") paramObject = {};
@@ -28,10 +28,18 @@ var MoreString = {
       for(i = 0, blankPatternCount = 0, partCount = stringParts.length - 1; i < partCount; i++) {
         finalString.push(stringParts[i]);
         if(key = stringParts[++i]) {
-          finalString.push(paramObject[key] || arguments[key] || '');
+          splitPos = key.indexOf(":");
+          if(splitPos !== -1) {
+            defaultVal = key.substr(splitPos + 1);
+            key = key.substr(0, splitPos);
+          }
+          else {
+            defaultVal = undefined;
+          }
+          finalString.push(paramObject[key] || args[key] || defaultVal || '');
         }
         else if(blankPatternCount < argLength){
-          finalString.push(arguments[blankPatternCount]);
+          finalString.push(args[blankPatternCount]);
           blankPatternCount++;
         }
       }

@@ -444,6 +444,10 @@ describe('String', function() {
     //Escaped
     assert.equal("a}b{}c".fmt(1, 2), "a}b1c");
     //assert.equal("a\{\}b{}c".fmt(1, 2), "a{b1c"); // TODO: Dont convert escaped patterns
+
+    //Default value
+    assert.equal("a{x:1}b{y:2}c".fmt(), "a1b2c");
+    assert.equal("a{x:1}b{y}c".fmt(), "a1bc");
   });
 
   it('"".removeTags', function() {
