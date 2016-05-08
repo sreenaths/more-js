@@ -447,7 +447,9 @@ describe('String', function() {
 
     //Default value
     assert.equal("a{x:1}b{y:2}c".fmt(), "a1b2c");
+    assert.equal("a{x:0}b{y:2}c".fmt(), "a0b2c");
     assert.equal("a{x:1}b{y}c".fmt(), "a1bc");
+    assert.equal("a{x:1}b{y:}c".fmt(), "a1bc");
   });
 
   it('"".removeTags', function() {
