@@ -12,7 +12,7 @@ var MoreString = {
   fmt: function (string) {
     var stringParts = string.split(/{(.*?)}/),
         finalString = [],
-        key, defaultVal, splitPos,
+        key, value, splitPos,
         i, blankPatternCount, partCount,
         argLength, paramObject, args;
 
@@ -30,13 +30,26 @@ var MoreString = {
         if(key = stringParts[++i]) {
           splitPos = key.indexOf(":");
           if(splitPos !== -1) {
-            defaultVal = key.substr(splitPos + 1);
+            value = key.substr(splitPos + 1);
             key = key.substr(0, splitPos);
           }
           else {
-            defaultVal = undefined;
+            value = undefined;
           }
-          finalString.push(paramObject[key] || args[key] || defaultVal || '');
+
+          if(!key && blankPatternCount < argLength){
+            key = args[blankPatternCount];
+            blankPatternCount++;
+          }
+
+          if(paramObject.hasOwnProperty(key)) {
+            value = paramObject[key];
+          }
+          else if(args.hasOwnProperty(key)) {
+            value = args[key];
+          }
+
+          finalString.push(value);
         }
         else if(blankPatternCount < argLength){
           finalString.push(args[blankPatternCount]);

@@ -422,8 +422,12 @@ describe('String', function() {
     assert.equal("abc{}".fmt(), "abc");
     assert.equal("abc".fmt({}), "abc");
 
+    assert.equal("abc{}".fmt(0), "abc0");
+    assert.equal("abc{}".fmt(false), "abcfalse");
+
     // Auto index
     assert.equal("a{}b{}c".fmt(1, 2), "a1b2c");
+    assert.equal("a{}b{}c".fmt(0, 1), "a0b1c");
     assert.equal("a{}{}c".fmt(1, 2), "a12c");
     assert.equal("a{}{}{}c".fmt(1, 2), "a12c"); // False
 
@@ -434,6 +438,8 @@ describe('String', function() {
     // Key based
     assert.equal("a{x}b{y}c".fmt(paramObj), "a1b2c");
     assert.equal("a{y}b{x}c".fmt(paramObj), "a2b1c");
+
+    assert.equal("a{x}b{y}c".fmt({x: 0, y: false}), "a0bfalsec");
 
     // Index + Key
     assert.equal("a{}{0}b{y}c".fmt(3, paramObj), "a33b2c");
@@ -448,6 +454,11 @@ describe('String', function() {
     //Default value
     assert.equal("a{x:1}b{y:2}c".fmt(), "a1b2c");
     assert.equal("a{x:0}b{y:2}c".fmt(), "a0b2c");
+    assert.equal("a{x:1}b{y:2}c".fmt({x: 0}), "a0b2c");
+
+    assert.equal("a{:1}b{y}c".fmt(), "a1bc");
+    assert.equal("a{:1}b{y}c".fmt(0), "a0bc");
+
     assert.equal("a{x:1}b{y}c".fmt(), "a1bc");
     assert.equal("a{x:1}b{y:}c".fmt(), "a1bc");
   });
