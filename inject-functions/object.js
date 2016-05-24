@@ -59,6 +59,11 @@ module.exports = {
   merge: function (sourceObject, appendArrays) {
     return Object.merge(this, sourceObject, appendArrays);
   },
+
+  arrayfy: function () {
+    return Object.arrayfy(this);
+  },
+
   inject: function (properties) {
     return Object.inject(this, properties);
   }

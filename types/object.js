@@ -268,7 +268,24 @@ var MoreString = require('./string'),
         value: value
       });
     });
-  }
+  },
+
+  /*
+   * Converts an object/hash into an array of object of key-value pairs
+   * @params object {Object} A hash of properties
+   * @return array {Array} An array of objects
+   */
+  arrayfy: function (object) {
+    var array = [];
+    MoreObject.forEach(object, function (key, value) {
+      array.push({
+        key: key,
+        value: value
+      });
+    });
+    return array;
+  },
+
 };
 
 module.exports = MoreObject;

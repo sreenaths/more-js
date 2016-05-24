@@ -393,6 +393,15 @@ describe('Object', function() {
     expect(invalidMerge).to.throw(Error);
   });
 
+  it('{}.arrayfy', function() {
+    var arr = {a: 1, b: 2, c: 3}.arrayfy();
+
+    expect(arr).to.have.length(3);
+    expect(arr[0]).to.eql({key: "a", value: 1});
+    expect(arr[1]).to.eql({key: "b", value: 2});
+    expect(arr[2]).to.eql({key: "c", value: 3});
+  });
+
   it('{}.inject', function() {
     var obj = {a: 1};
     obj.inject({b: 2, c: 3});
