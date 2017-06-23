@@ -4,7 +4,9 @@
  * More.js - Distributable
  */
 
-var MoreString = {
+var MoreString, MoreObject, MoreArray;
+
+MoreString = {
   /*
    * Replaces the patterns in current string with the given values.
    * Pattern can be {} or {argumentIndex} or {keyName}. {} will be replaced in the order of arguments.
@@ -78,7 +80,7 @@ var MoreString = {
   }
 };
 
-var MoreObject = {
+MoreObject = {
 
   /*
    * Returns type of an object as a string
@@ -312,8 +314,7 @@ var MoreObject = {
 
     MoreObject.keys(sourceObject).forEach(function (key) {
       var targetVal = targetObject[key],
-          sourceVal = sourceObject[key],
-          MoreArray;
+          sourceVal = sourceObject[key];
 
       if(MoreObject.isPlainObject(targetVal) && MoreObject.isPlainObject(sourceVal)) {
         MoreObject.merge(targetVal, sourceVal, appendArray);
@@ -346,7 +347,7 @@ var MoreObject = {
   }
 };
 
-var MoreArray = {
+MoreArray = {
 
   /*
    * Returns the first element in the array
